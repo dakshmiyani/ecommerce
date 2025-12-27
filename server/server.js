@@ -17,8 +17,13 @@ const ConnectDB = require('./database/db')
 
 //routes
 const userRoutes = require('./routes/user.routes');
-
+const productRoutes = require('./routes/product.routes');
 app.use('/api/users', userRoutes);
+app.use('/api/products',productRoutes)
+
+
+
+
 
 const PORT = process.env.PORT || 3000;
 
