@@ -12,6 +12,7 @@ import Profile from './pages/Profile'
 import ForgotPassword from './pages/ForgotPassword'
 import VerifyOtp from './pages/VerifyOtp'
 import ResetPassword from './pages/ResetPassword'
+import Products  from './pages/products'
 
 
 const router = createBrowserRouter([
@@ -51,6 +52,11 @@ const router = createBrowserRouter([
 {
   path:"/reset-password",
   element:<ResetPassword />
+},
+{
+  path:"/products",
+  element:<><Navbar /><Products/></>
+
 }
 ])
 
