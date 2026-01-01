@@ -23,13 +23,18 @@ const Products = () => {
         try {
             setLoading(true)
             const res = await axios.get(`${baseURL}/products/all-products`);
-            if(res.data.success){
-                  setAllProducts(res.data.products);
-            }
-            
-        } catch (error) {
-            console.log(error);
-            console.error(error.data.message)
+         if (res.data?.success) {
+      setAllProducts(res.data.products);
+    }
+  } catch (error) {
+    console.log(error);
+
+    const message =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Failed to fetch products";
+
+    console.error(message);
             
         }finally{
             setLoading(false)
@@ -44,10 +49,10 @@ const Products = () => {
 console.log(allProdutcs)
 
   return (
-    <div className='pt-60 pl-10'>
+    <div className='pt-60 pl-5'>
     <div className="max-w-7xl mc-auto flex gap-7">
 {/* Filter Side Bar */}
-<FilterSideBar/>
+<FilterSideBar allProdutcs={allProdutcs}/>
 {/* main product */}
       <div className="flex flex-col flex-1">
           <div className="flex justify-end mb-4">
