@@ -13,6 +13,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import VerifyOtp from './pages/VerifyOtp'
 import ResetPassword from './pages/ResetPassword'
 import Products  from './pages/products'
+import Cart from './pages/Cart'
 
 
 const router = createBrowserRouter([
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
   path:"/products",
   element:<><Navbar /><Products/></>
 
+},
+{
+  path:"/cart",
+  element:<><Navbar /><Cart/></>
 }
 ])
 
