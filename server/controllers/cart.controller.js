@@ -1,4 +1,4 @@
-const cartModel = require("../models/cart.model");
+const Cart = require("../models/cart.model");
 const productModel = require("../models/product.model");
 
 
@@ -9,7 +9,7 @@ const getCart = async (req,res)=>{
 
         const userId =req.id;
 
-        const cart= await cartModel.findOne({userId}).populate("items.productId")
+        const cart= await Cart.findOne({userId}).populate("items.productId")
          if(! cart){
             return res.json({
                 success:true,
@@ -46,7 +46,7 @@ const addToCart = async (req,res) =>{
         })
        }
 
-       let cart = await cartModel.findOne({userId})
+       let cart = await Cart.findOne({userId})
 
        if(!cart){
        cart = new cartModel({
@@ -58,11 +58,40 @@ const addToCart = async (req,res) =>{
     
     
     )
-       }else{
+       }else{ 
+        const itemIndex = cart.items.findIndex(
+            (item) => item.productId.toString() === productId
+        )
+        if(itemIndex > -1){
+
+            cart.items[itemIndex].quantity +=1
+        }else{
+            cart.items.push({
+                productId,
+                quantity:1,
+                price:product.productPrice
+            })
+        }
+         
+
+        cart.totalPrice = cart.items.reduce(
+            (acc,item) => acc +item.price* item.quantity
+        )
         
        }
 
 
+       await cart.save()
+
+       //product details 
+       const populatedCart = await Cart.findById(cart._id).populate("items.productId")
+     
+
+        res.status(200).json({
+            success:true,
+            message:"product added to a cart successfully",
+            cart :populatedCart
+        })
         
     } catch (error) {
         return res.status(500).json({
@@ -70,4 +99,93 @@ const addToCart = async (req,res) =>{
             message:error.message
         })
     }
+}
+
+
+const updateQuantity = async(req,res)=>{
+    try {
+        const userId = req.id;
+        const{product,type} = req.body;
+
+        let cart = await Cart.findOne({userId})
+        if(!cart){
+            return res.status(404).json({
+                success:false,
+                message:"cart not found"
+            })
+        }
+
+        const item = cart.items.find(item => item.productId.toString() === productId)
+        if(!item){
+            return res.status(404).json({
+                success:false,
+                message:"item not found"
+
+            })
+        }
+        if(type === "increase"){
+            item.quantity += 1
+        }
+        if(type === "decrease" && item.quantity >1){
+            item.quantity -=1
+        }
+        
+        cart.totalPrice = cart.items.reduce((acc,item)=> acc+item.price*item.quantity)
+
+        await cart.save()
+
+        cart = await cart.populate("items.productId")
+
+
+        res.status(200).json({
+            success:true,
+            message: error.message
+        })
+
+    } catch (error) {
+        
+        return res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
+const removQuantity = async (req,res)=>{
+
+   try {const userId =req.id;
+    const {productId} = req.body;
+
+    let cart = await Cart.findOne({userId})
+    if(!cart) return res.status(404).json({
+        success:false,
+        message:"cart not found "
+    })
+
+    cart.items = cart.items.filter(item => item.productId.toString() !== productId)
+
+    cart.totalPrice = cart.items.reduce((acc,item)=> acc + item.price * item.quantity,0)
+
+    await cart.save()
+   res.status(200).json({
+    success:true,
+    cart
+   })
+
+}catch (error){
+    return res.status(500).json({
+        success:false,
+        message:error.message
+    })
+}
+
+
+}
+
+
+module.exports= {
+    getCart,
+    addToCart,
+    updateQuantity,
+    removQuantity 
 }

@@ -18,8 +18,10 @@ const ConnectDB = require('./database/db')
 //routes
 const userRoutes = require('./routes/user.routes');
 const productRoutes = require('./routes/product.routes');
+const cartRoutes = require("./routes/cart.routes")
 app.use('/api/users', userRoutes);
 app.use('/api/products',productRoutes)
+app.use("/api/cart",cartRoutes)
 
 
 
