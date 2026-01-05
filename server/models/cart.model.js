@@ -32,7 +32,7 @@ const cartSchema = new mongoose.Schema({
         default:0,
 
     }
-},{timestamps}
+},{timestamps:true}
 
 )
 
