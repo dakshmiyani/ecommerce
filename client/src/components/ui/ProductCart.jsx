@@ -1,10 +1,45 @@
 import React from "react";
 import { Button } from "./button";
 import { Skeleton } from "./skeleton";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setCart } from "@/redux/productSlice";
+import axios from "axios";
+
 
 const ProductCard = ({ product ,loading}) => {
   const { productImg, productPrice, productName } = product;
+   const baseUrl = import.meta.env.VITE_BASE_URL;
+   const accessToken = localStorage.getItem('accessToken');
+  console.log(accessToken)
+   const dispatch = useDispatch();
+  //  const navigate = useNavigate();
 
+
+
+
+  const addToCart = async (productId) =>{
+    try {
+      
+      const res = await axios.post(`${baseUrl}/cart/add`, {productId},{
+        headers:{
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+
+      if(res.data.success){
+        toast.success('product added to cart')
+        dispatch(setCart(res.data.cart))
+      }
+    } catch (error) {
+  console.log(error);
+  
+      
+    }
+  }
+
+   
   return (
     <div className="shadow-lg rounded-lg overflow-hidden h-max">
       <div className="w-full h-full aspect-square overflow-hidden">
@@ -24,7 +59,7 @@ const ProductCard = ({ product ,loading}) => {
             </div>:<div className="p-4">
         <h3 className="font-semibold text-lg">{productName}</h3>
         <p className="text-gray-600">₹{productPrice}</p>
-        <Button className="bg-blue-700 mb-3 w-full" >Add to Cart</Button>
+        <Button onClick={()=> addToCart(product._id)} className="bg-blue-700 mb-3 w-full" >Add to Cart</Button>
       </div>
 
         }
