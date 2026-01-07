@@ -1,36 +1,69 @@
-import { Card } from '@/components/ui/card'
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { Card } from "@/components/ui/card";
+import React from "react";
+import { useSelector } from "react-redux";
 
 const Cart = () => {
+  const { cart } = useSelector((store) => store.product);
 
-  const {cart} = useSelector(store => store.product)
-  console.log(cart)
   return (
-    <div className='pt-50 pl-10 bg-gray-50 min-h-screen'>
-{
-  cart?.items?.length >0 ? <div className="max-w-7xl mx-auto">
-    <h1 className='text-2xl font-bold text-gray-800 mb-7'>Shopping Cart</h1>
-    <div className='max-w-7xl mx-auto flex gap-7'>
-      <div className="flex felx-col gap-5 flex-1"></div>
-      {
-        cart?.items?.map((product,index) =>{
-          return <Card key={index}>
-           <div className="flex justify-between items-center pr-7">
-            <div className="flex items-center w-[350px]">
-              <img src={product?.productId?.productImg} alt="" />
-            </div>
-           </div>
+    <div className="pt-50 min-h-screen bg-gray-50 pt-16 px-4 sm:px-10">
+      {cart?.items?.length > 0 ? (
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-6">
+            Shopping Cart
+          </h1>
 
-          </Card>
-        })
-      }
+          <div className="flex flex-col gap-4">
+            {cart.items.map((item) => (
+              <Card key={item._id} className="p-4 sm:p-5">
+  <div className="flex flex-row sm:flex-row gap-4 sm:gap-6 items-center">
 
+    {/* Product Image (small on mobile) */}
+    <img
+      src={item.productId?.productImg?.[0]?.url || "/placeholder.png"}
+      alt={item.productId?.productName || "Product"}
+      className="
+        w-20 h-20 
+        sm:w-24 sm:h-24 
+        object-cover rounded
+      "
+    />
+
+    {/* Product Details */}
+    <div className="flex-1">
+      <h3 className="font-semibold text-sm sm:text-lg leading-snug">
+        {item.productId?.productName}
+      </h3>
+
+      <p className="text-xs sm:text-sm text-gray-600 mt-1">
+        Price: ₹ {item.price}
+      </p>
+
+      <p className="text-xs sm:text-sm text-gray-600">
+        Qty: {item.quantity}
+      </p>
     </div>
-  </div> :""
-}
-    </div>
-  )
-}
 
-export default Cart
+    {/* Subtotal */}
+    <div className="text-right">
+      <p className="text-xs sm:hidden text-gray-500">Subtotal</p>
+      <p className="font-bold text-sm sm:text-lg">
+        ₹ {item.price * item.quantity}
+      </p>
+    </div>
+  </div>
+</Card>
+
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-[60vh] text-gray-500 text-sm sm:text-base">
+          Your cart is empty
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Cart;
