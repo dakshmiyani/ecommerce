@@ -12,7 +12,7 @@ const ProductCard = ({ product ,loading}) => {
   const { productImg, productPrice, productName } = product;
    const baseUrl = import.meta.env.VITE_BASE_URL;
    const accessToken = localStorage.getItem('accessToken');
-  console.log(accessToken)
+ 
    const dispatch = useDispatch();
   //  const navigate = useNavigate();
 

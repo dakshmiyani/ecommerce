@@ -10,6 +10,8 @@ import { setUser } from "@/redux/userSlice";
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const Navbar = () => {
+  const {cart} = useSelector(store => store.product)
+  console.log(cart)
   const user = useSelector((state) => state.user?.User);
   const accessToken = localStorage.getItem("accessToken");
   const dispatch = useDispatch();
@@ -92,7 +94,8 @@ const Navbar = () => {
           <Link to="/cart" className="relative flex items-center">
             <ShoppingCart className="w-6 h-6 text-gray-700" />
             <span className="bg-blue-500 rounded-full absolute text-white text-xs -top-2 -right-3 px-1.5 py-0.5">
-              0
+           {cart.items[0].quantity}
+
             </span>
           </Link>
 
