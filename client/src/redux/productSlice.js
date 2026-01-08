@@ -18,7 +18,6 @@ const productSlice = createSlice({
       state.cart = action.payload;
     },
 
-    // ✅ NEW: update cart item quantity
     updateCartQuantity: (state, action) => {
       const { productId, quantity } = action.payload;
 
@@ -30,7 +29,20 @@ const productSlice = createSlice({
         item.quantity = quantity;
       }
 
-      // recalc total price
+      state.cart.totalPrice = state.cart.items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+    },
+
+    // ✅ REMOVE ITEM
+    removeCartItem: (state, action) => {
+      const productId = action.payload;
+
+      state.cart.items = state.cart.items.filter(
+        (item) => item.productId._id !== productId
+      );
+
       state.cart.totalPrice = state.cart.items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
@@ -43,6 +55,7 @@ export const {
   setProducts,
   setCart,
   updateCartQuantity,
+  removeCartItem,
 } = productSlice.actions;
 
 export default productSlice.reducer;
