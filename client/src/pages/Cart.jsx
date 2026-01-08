@@ -7,42 +7,91 @@ import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
 
 import { Link } from "react-router-dom";
-import { updateCartQuantity, removeCartItem } from "@/redux/productSlice";
+import { updateCartQuantity, setCart } from "@/redux/productSlice";
+import axios from "axios";
+
+
 
 
 const Cart = () => {
   const { cart } = useSelector((store) => store.product);
   const dispatch = useDispatch();
 
+
+const baseURL = import.meta.env.VITE_BASE_URL;
+
+const accessToken = localStorage.getItem("accessToken");
+
+
+const handleUpdateQuantity = async (item, type) => {
+  try {
+    const res = await axios.put(
+      `${baseURL}/cart/update`,
+      {
+        productId: item.productId._id,
+        type, // "increase" | "decrease"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (res.data.success) {
+      dispatch(setCart(res.data.cart)); // 🔥 backend → redux → UI
+    }
+  } catch (error) {
+    console.error("Quantity update failed:", error);
+  }
+};
+
+const handleRemove = async (item) => {
+  try {
+    const res = await axios.delete(`${baseURL}/cart/remove`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: {
+        productId: item.productId._id,
+      },
+    });
+console.log("BACKEND CART:", res.data.cart);
+    if (res.data.success) {
+      dispatch(setCart(res.data.cart));
+      
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   const subtotal = cart?.totalPrice || 0;
   const shipping = subtotal > 299 ? 0 : subtotal * 0.1;
   const tax = subtotal * 0.05;
   const total = subtotal + shipping + tax;
-const handleRemove = (item) => {
-  dispatch(removeCartItem(item.productId._id));
-};
 
 
-  
-  const handleDecrease = (item) => {
-    if (item.quantity > 1) {
-      dispatch(
-        updateCartQuantity({
-          productId: item.productId._id,
-          quantity: item.quantity - 1,
-        })
-      );
-    }
-  };
+  //   const handleDecrease = (item) => {
+  //   if (item.quantity > 1) {
+  //     dispatch(
+  //       updateCartQuantity({
+  //         productId: item.productId._id,
+  //         quantity: item.quantity - 1,
+  //       })
+  //     );
+  //   }
+  // };
 
-  const handleIncrease = (item) => {
-    dispatch(
-      updateCartQuantity({
-        productId: item.productId._id,
-        quantity: item.quantity + 1,
-      })
-    );
-  };
+
+  // const handleIncrease = (item) => {
+  //   dispatch(
+  //     updateCartQuantity({
+  //       productId: item.productId._id,
+  //       quantity: item.quantity + 1,
+  //     })
+  //   );
+  // };
 
   return (
     <div className="pt-50 min-h-screen bg-gray-50 pt-16 px-4 sm:px-10">
@@ -93,7 +142,7 @@ const handleRemove = (item) => {
                           size="sm"
                           className="bg-blue-600 text-white w-8 h-8"
                           disabled={item.quantity === 1}
-                          onClick={() => handleDecrease(item)}
+                          onClick={() => handleUpdateQuantity(item,"decrease")}
                         >
                           -
                         </Button>
@@ -105,7 +154,7 @@ const handleRemove = (item) => {
                         <Button
                           size="sm"
                           className="bg-blue-600 text-white w-8 h-8"
-                          onClick={() => handleIncrease(item)}
+                          onClick={() => handleUpdateQuantity(item,"increase")}
                         >
                           +
                         </Button>
