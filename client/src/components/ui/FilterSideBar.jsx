@@ -4,14 +4,14 @@ import { Label } from './label';
 import { Button } from './button';
 
 
-const FilterSideBar = ({allProdutcs = [],priceRnage,setPriceRange, search,setSearch,brand,setBrand,category,setCategory}) => {
+const FilterSideBar = ({allProducts = [],priceRnage,setPriceRange, search,setSearch,brand,setBrand,category,setCategory}) => {
 
 
 
-  const categories = allProdutcs.map(p => p.category)
+  const categories = allProducts.map(p => p.category)
 const UniqueCategory = ["ALL", ...new Set(categories)];
 
-const Brands= allProdutcs.map(p => p.brand)
+const Brands= allProducts.map(p => p.brand)
 const UniqueBrand = ["ALL", ...new Set(Brands)]
 
 
