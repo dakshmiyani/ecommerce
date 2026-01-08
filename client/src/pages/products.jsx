@@ -23,12 +23,14 @@ const Products = () => {
     
 
   const baseURL = import.meta.env.VITE_BASE_URL;
-   const[allProdutcs, setAllProducts] = useState([])
+   const[allProducts, setAllProducts] = useState([])
    const[loading, setLoading] = useState(false);
    const[search,setSearch] = useState("");
    const[category,setCategory]=useState("ALL")
    const[brand,setBrand]=useState("ALL")
    const[sortOrder, setSortOrder]=useState('');
+   const [showFilters, setShowFilters] = useState(false);
+
 
    const[ priceRnage, setPriceRange] = useState([0,999999]);
    const dispatch = useDispatch()
@@ -62,10 +64,10 @@ const Products = () => {
 
 
     useEffect(()=>{
-      if(allProdutcs.length === 0) return;
+      if(allProducts.length === 0) return;
       
 
-      let filtered= [...allProdutcs]
+      let filtered= [...allProducts]
 
       if(search.trim() !== ""){
         filtered=filtered.filter(p=>p.productNmae?.toLowerCase().includes(search.toLocaleLowerCase()))
@@ -86,16 +88,16 @@ const Products = () => {
       }
 
       dispatch(setProducts(filtered))
-    },[search,category,brand,priceRnage,sortOrder, allProdutcs]);
+    },[search,category,brand,priceRnage,sortOrder, allProducts]);
 
 
-console.log(allProdutcs)
+console.log(allProducts)
 
   return (
     <div className='pt-60 pl-5'>
     <div className="max-w-7xl mc-auto flex gap-7">
 {/* Filter Side Bar */}
-<FilterSideBar allProdutcs={allProdutcs} 
+<FilterSideBar allProducts={allProducts} 
 search={search}
 setSearch={setSearch}
 
@@ -133,7 +135,7 @@ setPriceRange ={setPriceRange}
 }
  
 
- 
+
   
 </div>
 </div>
