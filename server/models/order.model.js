@@ -44,7 +44,7 @@ const orderSchema = mongoose.Schema({
    totalAmount:{
     type:Number
    },
-
+    
    paymentStatus :{
     type: String,
     enum: ["pending","paid","failed"],
