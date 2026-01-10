@@ -14,7 +14,8 @@ const createOrder = async (req,res) =>{
       })
     }
     const {
-  fullName,
+ firstName,
+ lastName,
   phone,
   addressLine,
   city,
@@ -23,7 +24,7 @@ const createOrder = async (req,res) =>{
 } = shippingAddress;
 
 if (
-  !fullName ||!phone ||!addressLine ||!city ||!state ||!zipcode
+  !firstName||!lastName ||!phone ||!addressLine ||!city ||!state ||!zipcode
 ) {
   return res.status(400).json({
     success: false,
