@@ -17,6 +17,8 @@ const Order = () => {
   const total = subtotal + shipping + tax;
    const baseUrl =import.meta.env.VITE_BASE_URL
 
+   const accessToken = localStorage.getItem("accessToken")
+
   const [formData, setFormData] = useState({
   firstName:"",
   lastName:"",
@@ -40,7 +42,16 @@ const Order = () => {
     const handleSubmit = async (e) =>{
         e.preventDefault();
         try {
-            const res= axios.post(`${baseUrl}/order`)
+            const res= await  axios.post(`${baseUrl}/order/create`,{shippingAddress:formData},{
+                headers:{
+                    Authorization:`Bearer ${accessToken}`,
+                      "Content-Type": "application/json"
+
+                }
+            });
+            if(res.data.success){
+                  toast.success(res.data.message);  
+            }
 
             
         } catch (error) {
@@ -181,7 +192,7 @@ const Order = () => {
                            type= "text"
                            required
                            id ="city"
-                           name="lastcityName"
+                           name="city"
                            value={formData.city}
                            onChange={handleChange}
 
@@ -227,7 +238,7 @@ const Order = () => {
 
                     </div >
                     <div className='ml-50 mt-10'>
-                      <Button variant="outline" className="bg-blue-600 text-white text-xl w-[300px] items-center"> payment</Button>
+                      <Button onClick={handleSubmit} variant="outline" className="bg-blue-600 text-white text-xl w-[300px] items-center"> payment</Button>
                       </div>
                 </div>
              </CardContent>
