@@ -14,6 +14,7 @@ import VerifyOtp from './pages/VerifyOtp'
 import ResetPassword from './pages/ResetPassword'
 import Products  from './pages/products'
 import Cart from './pages/Cart'
+import Order from './pages/Order'
 
 
 const router = createBrowserRouter([
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
 {
   path:"/cart",
   element:<><Navbar /><Cart/></>
+},
+{
+  path:"/order",
+  element:<><Navbar /><Order/></>
 }
 ])
 
