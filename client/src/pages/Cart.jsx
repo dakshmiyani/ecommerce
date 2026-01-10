@@ -209,9 +209,9 @@ console.log("BACKEND CART:", res.data.cart);
                   <div className=" space-y-3 pt-4">
                     <div className="flex space-x-2">
                     <Input className="flex justify-start mr-4 w-full" placeholder="Enter a Promo code"></Input>
-                    <Button className="flex justify-end bg-blue-600 text-white" variant="outline" >Apply</Button>
+                  <Button className="flex justify-end bg-blue-600 text-white" variant="outline" >Apply</Button>
                   </div>
-                  <Button className="w-full bg-blue-600 text-white cursor-pointer" variant="outline">Place Order</Button>
+                   <Link to="/order"><Button className="w-full bg-blue-600 text-white cursor-pointer" variant="outline">Place Order</Button></Link>
                     <Link to="/products"> <Button variant="outline" className="w-full bg-transparent">
                  Continue Shopping</Button></Link>
                   </div>
