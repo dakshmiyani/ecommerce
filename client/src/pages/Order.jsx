@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Order = () => {
       const { cart } = useSelector((store) => store.product);
@@ -16,7 +17,7 @@ const Order = () => {
   const tax = subtotal * 0.05;
   const total = subtotal + shipping + tax;
    const baseUrl =import.meta.env.VITE_BASE_URL
-
+   const navigate = useNavigate()
    const accessToken = localStorage.getItem("accessToken")
 
   const [formData, setFormData] = useState({
@@ -39,27 +40,32 @@ const Order = () => {
     );
     }
 
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        try {
-            const res= await  axios.post(`${baseUrl}/order/create`,{shippingAddress:formData},{
-                headers:{
-                    Authorization:`Bearer ${accessToken}`,
-                      "Content-Type": "application/json"
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-                }
-            });
-            if(res.data.success){
-                  toast.success(res.data.message);  
-            }
+  try {
+    const res = await axios.post(
+      `${baseUrl}/order/create`,
+      { shippingAddress: formData },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-            
-        } catch (error) {
-            toast.error(error.response.data.message)
-            
-        }
-
+    if (res.data.success) {
+      // 🔥 fetch updated cart
+     
+ navigate('/products')
+   
+      toast.success(res.data.message);
     }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Something went wrong");
+  }
+};
 
 
 
@@ -68,7 +74,7 @@ const Order = () => {
   return (
     
     <div className='flex pt-50 pl-10 gap-4'>
-      <div className>
+      <div >
           <Card className="sticky top-24 w-150">
                 <CardHeader>
                   <CardTitle className="font-extralight text-4xl ml-5">Order Summary</CardTitle>
@@ -116,7 +122,7 @@ const Order = () => {
                 <div className='flex flex-col gap-3 w-full' >
                     <div className='flex grid-col gap-2 w-full' >
                        <div className=' grid gap-2 w-full'>
-                        <Label htmlfor ="fullName">First Name</Label>
+                        <Label htmlFor ="fullName">First Name</Label>
                         <Input
                         className="w-full"
                            type= "text"
@@ -132,7 +138,7 @@ const Order = () => {
                         </div>
                         
                         <div className='grid gap-2 w-full'>
-                        <Label htmlfor ="lastName">Last Name</Label>
+                        <Label htmlFor ="lastName">Last Name</Label>
                         <Input
                          className="w-full"
                            type= "text"
@@ -151,7 +157,7 @@ const Order = () => {
 
                     <div className='flex grid-col gap-2 w-full' >
                        <div className=' grid gap-2 w-full'>
-                        <Label htmlfor ="addressLine">Address</Label>
+                        <Label htmlFor ="addressLine">Address</Label>
                         <Input
                         className="w-full"
                            type= "text"
@@ -170,7 +176,7 @@ const Order = () => {
 
                     <div className='flex grid-col gap-2 w-full' >
                        <div className=' grid gap-2 w-full'>
-                        <Label htmlfor ="phone">Mobile No.</Label>
+                        <Label htmlFor ="phone">Mobile No.</Label>
                         <Input
                         className="w-full"
                            type= "Number"
@@ -186,7 +192,7 @@ const Order = () => {
                         </div>
                         
                         <div className='grid gap-2 w-full'>
-                        <Label htmlfor ="city">City</Label>
+                        <Label htmlFor ="city">City</Label>
                         <Input
                          className="w-full"
                            type= "text"
@@ -205,7 +211,7 @@ const Order = () => {
 
                     <div className='flex grid-col gap-2 w-full' >
                        <div className=' grid gap-2 w-full'>
-                        <Label htmlfor ="state">State</Label>
+                        <Label htmlFor ="state">State</Label>
                         <Input
                         className="w-full"
                            type= "text"
@@ -221,7 +227,7 @@ const Order = () => {
                         </div>
                         
                         <div className='grid gap-2 w-full'>
-                        <Label htmlfor ="zipcode">Zip Code</Label>
+                        <Label htmlFor ="zipcode">Zip Code</Label>
                         <Input
                          className="w-full"
                            type= "text"
