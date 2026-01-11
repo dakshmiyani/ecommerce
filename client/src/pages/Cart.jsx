@@ -39,6 +39,7 @@ const handleUpdateQuantity = async (item, type) => {
     );
 
     if (res.data.success) {
+
       dispatch(setCart(res.data.cart)); // 🔥 backend → redux → UI
     }
   } catch (error) {
@@ -56,10 +57,10 @@ const handleRemove = async (item) => {
         productId: item.productId._id,
       },
     });
-console.log("BACKEND CART:", res.data.cart);
+
     if (res.data.success) {
       dispatch(setCart(res.data.cart));
-      
+      console.log("BACKEND CART:", res.data.cart);
     }
   } catch (error) {
     console.error(error);
