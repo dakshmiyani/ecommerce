@@ -92,7 +92,8 @@ if (
         return res.status(201).json({
       success:true,
       message:"order place. successfully",
-       order
+       order,
+       cart
     })
   }catch(error){
     return res.status(500).json({
