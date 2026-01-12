@@ -7,6 +7,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
 
+
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const Navbar = () => {
@@ -52,8 +53,30 @@ const Navbar = () => {
       }
     }
   };
+  const handleCart = async (e) =>{
+    try { 
+      
+      const Cartres = await axios.get(
+      `${baseUrl}/cart/getcart`,
+      
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          
+        },
+      }
+    )
+        dispatch(setCart(Cartres.data.cart));
+      
+    } catch (error) {
+      
+    }
 
+  }
   return (
+   
+
+        
     <>
       {/* NAVBAR */}
       <header className="bg-blue-50 fixed w-full z-20 border-b border-blue-200">
@@ -91,10 +114,10 @@ const Navbar = () => {
 
             {/* Cart */}
             <Link to="/cart" className="relative">
-              <ShoppingCart className="w-6 h-6 text-gray-700" />
-              {cartCount > 0 && (
+              <ShoppingCart onClick={handleCart} className="w-6 h-6 text-gray-700" />
+              {cartCount >0 && (
                 <span className="bg-blue-500 absolute -top-2 -right-3 text-white text-xs rounded-full px-1.5">
-                  {cartCount}
+                  {cartCount }
                 </span>
               )}
             </Link>
