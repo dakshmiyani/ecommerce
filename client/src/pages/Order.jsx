@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
-
+import { setCart } from '@/redux/productSlice';
+import { useDispatch } from 'react-redux';
 const Order = () => {
       const { cart } = useSelector((store) => store.product);
        const subtotal = cart?.totalPrice || 0;
@@ -18,6 +19,7 @@ const Order = () => {
   const total = subtotal + shipping + tax;
    const baseUrl =import.meta.env.VITE_BASE_URL
    const navigate = useNavigate()
+   const dispatch =useDispatch()
    const accessToken = localStorage.getItem("accessToken")
 
   const [formData, setFormData] = useState({
@@ -58,7 +60,21 @@ const Order = () => {
     if (res.data.success) {
       // 🔥 fetch updated cart
      
- navigate('/products')
+
+
+    const Cartres = await axios.get(
+      `${baseUrl}/cart/getcart`,
+      
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          
+        },
+      }
+    )
+        dispatch(setCart(Cartres.data.cart));
+
+         navigate('/products')
    
       toast.success(res.data.message);
     }
