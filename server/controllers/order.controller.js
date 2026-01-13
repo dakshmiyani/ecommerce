@@ -105,6 +105,27 @@ if (
 
   }
 
+  const getOrder = async (req,res) =>{
+
+     const userId = req.id;
+     const order = await Order.find({userId});
+    if(!order || order.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:"No order is placed"
+      })
+    }
+  
+
+    return res.status(200).json({
+      success:true,
+      order
+    
+    })
+
+  }
+
 module.exports ={
-  createOrder
+  createOrder,
+  getOrder
 }
