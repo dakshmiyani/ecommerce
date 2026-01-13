@@ -107,7 +107,7 @@ if (
 
   const getOrder = async (req,res) =>{
 
-     const userId = req.id;
+     try {const userId = req.id;
      const order = await Order.find({userId});
     if(!order || order.length === 0){
       return res.status(404).json({
@@ -122,6 +122,62 @@ if (
       order
     
     })
+}catch(error){
+  return res.status(500).json({
+    success:false,
+    message:error.message
+  })
+
+}
+  }
+
+
+  const updateDeliveryStatus = async (req,res)=>{
+    try {
+
+      const orderId = req.params.orderId;
+       
+      const order = await Order.findById(orderId);
+       
+      if(!order){
+        return res.status(404).json({
+          success:false,
+          message:"No such order foun"
+        })
+      }
+
+      const {orderStatus} = req.body;
+
+      if(!orderStatus){
+        return res.status(400).json({
+          success:false,
+          message:"status is required"
+        })
+      }
+      
+      order.orderStatus = orderStatus;
+
+
+      await order.save();
+
+
+      return res.status(200).json({
+        success:true,
+        order,
+        message:"status updated succesfully"
+      })
+
+
+
+
+      
+    } catch (error) {
+      
+      return res.status(500).json({
+        success:false,
+        message:error.message
+      })
+    }
 
   }
 
