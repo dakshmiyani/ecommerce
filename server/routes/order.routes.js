@@ -7,7 +7,8 @@ const Authenticated = require('../middleware/isAuthenticated.middleware');
 const OrderController =require("../controllers/order.controller");
 
 
-router.post('/create',Authenticated.isAuthenticated,OrderController.createOrder)
+router.post('/create',Authenticated.isAuthenticated,OrderController.createOrder);
+router.get('/getorder', Authenticated.isAuthenticated,OrderController.getOrder)
 
 
 module.exports= router;
