@@ -183,5 +183,6 @@ if (
 
 module.exports ={
   createOrder,
-  getOrder
+  getOrder,
+  updateDeliveryStatus
 }
