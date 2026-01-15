@@ -1,6 +1,7 @@
 
 const Order = require('../models/order.model');
 const Cart = require('../models/cart.model')
+const {ORDER_STATUS }= require("../models/constants/constant")
 
 const createOrder = async (req,res) =>{
 
@@ -142,7 +143,7 @@ if (
       if(!order){
         return res.status(404).json({
           success:false,
-          message:"No such order foun"
+          message:"No such order found"
         })
       }
 
@@ -180,9 +181,45 @@ if (
     }
 
   }
+const cancelOrder = async (req,res) =>{
+  try {
+    const orderId = req.params.orderId;
+ const order = await Order.findById(orderId);
+     if(!order){
+      return res.status(404).json({
+        success:false,
+        message:"No such order found"
+      })
+     }
 
+     if(order.orderStatus == ORDER_STATUS.SHIPPED){
+      return res.status(400).json({
+        success:false,
+        message:"Order cannot be cancelled as it is already shipped"
+      })
+     }
+
+     order.orderStatus = ORDER_STATUS.CANCELLED;
+
+     await order.save();
+
+     return res.status(200).json({
+      success:true,
+      message:"Order cancelled successfully"
+     })
+
+    
+  } catch (error) {
+    return res.status(500).json({
+      success:false,
+      message:error.message
+    })
+    
+  }
+}
 module.exports ={
   createOrder,
   getOrder,
-  updateDeliveryStatus
+  updateDeliveryStatus,
+  cancelOrder
 }
