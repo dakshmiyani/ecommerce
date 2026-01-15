@@ -183,6 +183,7 @@ if (
   }
 const cancelOrder = async (req,res) =>{
   try {
+    const userId = req.id;
     const orderId = req.params.orderId;
  const order = await Order.findById(orderId);
      if(!order){
@@ -191,6 +192,12 @@ const cancelOrder = async (req,res) =>{
         message:"No such order found"
       })
      }
+     if (order.userId.toString() !== userId) {
+  return res.status(403).json({ 
+    success:false,
+    message: "Not allowed" });
+}
+
 
      if(order.orderStatus == ORDER_STATUS.SHIPPED){
       return res.status(400).json({
