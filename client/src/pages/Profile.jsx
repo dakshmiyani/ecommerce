@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { setUser } from "@/redux/userSlice";
 import { Loader2 } from "lucide-react";
+import MyOrders from "@/components/ui/Myorders";
 
 
 const Profile = () => {
@@ -16,6 +17,7 @@ const Profile = () => {
   const { userId } = useParams();
   const user = useSelector((state) => state.user?.User);
 const [loading, setLoading] = useState(false);
+
 
   const [updateUser, setUpdateUser] = useState({
     firstName: "",
@@ -121,6 +123,8 @@ const [loading, setLoading] = useState(false);
           <div className="mb-6">
             <TabsList className="mx-auto md:mx-0">
               <TabsTrigger value="profile">Profile</TabsTrigger>
+            <  TabsTrigger value="orders">orders</TabsTrigger>
+  
             </TabsList>
           </div>
 
@@ -286,6 +290,11 @@ const [loading, setLoading] = useState(false);
                 </form>
               </div>
             </div>
+          </TabsContent>
+          {/* views orders */}
+          <TabsContent value="orders">
+             <h1>Your Orders</h1>
+               <MyOrders/>
           </TabsContent>
         </Tabs>
       </div>
