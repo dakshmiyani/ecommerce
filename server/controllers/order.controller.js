@@ -227,9 +227,32 @@ const cancelOrder = async (req,res) =>{
   }
 }
 
+const getAllOrders= async (req,res)=>{
+  try {
+    const orders = await Order.find();
+    if(!orders || orders.length === 0){
+      return res.status(404).json({
+        success:false,
+        message:"No orders found"      })
+    }
+    
+    return res.status(200).json({
+      success:true,
+      orders
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success:false,
+      message:error.message
+    })
+    
+  }
+}
+
 module.exports ={
   createOrder,
   getOrder,
   updateDeliveryStatus,
-  cancelOrder
+  cancelOrder,
+  getAllOrders
 }
