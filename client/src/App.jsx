@@ -17,6 +17,14 @@ import Cart from './pages/Cart'
 import Order from './pages/Order'
 
 
+import AdminLayout from './pages/AdminLayout';
+import AdminProducts from './components/ui/AdminProducts';
+import AddProduct from './components/ui/AddProducts';
+import UpdateProduct from './components/ui/UpdateProduct';
+import AdminOrders from './components/ui/AdminOrder'
+import ProtectedAdminRoute from './routes/ProtectedRoute'
+import AdminDashboard from './components/ui/AdminDashboard'
+
 const router = createBrowserRouter([
   // Define your routes here
 {
@@ -67,7 +75,37 @@ const router = createBrowserRouter([
 {
   path:"/order",
   element:<><Navbar /><Order/></>
-}
+},
+ {
+    path: "/admin",
+    element: (
+      <ProtectedAdminRoute>
+        <AdminLayout />
+      </ProtectedAdminRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard />,
+      },
+      {
+        path: "products",
+        element: <AdminProducts />,
+      },
+      {
+        path: "add-product",
+        element: <AddProduct />,
+      },
+      {
+        path: "update-product/:productId",
+        element: <UpdateProduct />,
+      },
+      {
+        path: "orders",
+        element: <AdminOrders />,
+      },
+    ],
+  },
 ])
 
 
