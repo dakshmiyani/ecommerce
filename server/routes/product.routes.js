@@ -11,6 +11,6 @@ router.post('/add-product',Authenticated.isAuthenticated,Authenticated.isAdmin, 
 router.get('/all-products', productController.getAllProducts)
 router.put('/update-product/:id', Authenticated.isAuthenticated, Authenticated.isAdmin, multipleUpload, productController.updateProduct);
 router.delete('/delete-product/:id', Authenticated.isAuthenticated, Authenticated.isAdmin, productController.deleteProduct);
-
+router.get('/:id',Authenticated.isAuthenticated, productController.getProductById)
 
 module.exports = router;
