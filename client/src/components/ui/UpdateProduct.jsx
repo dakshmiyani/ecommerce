@@ -92,7 +92,7 @@ const UpdateProduct = () => {
       images.forEach((img) => formData.append("files", img));
 
       const res = await axios.put(
-        `${baseUrl}/products/update/${productId}`,
+        `${baseUrl}/products/update-product/${productId}`,
         formData,
         {
           headers: {
@@ -140,7 +140,7 @@ const UpdateProduct = () => {
           <div className="grid grid-cols-3 gap-3 mb-6">
             {product.productImg.map((img) => (
               <div key={img.public_id} className="relative">
-                <img src={img.url} className="h-24 w-full object-cover rounded" />
+                <img src={img.url} className="h-full w-full object-cover rounded border-2" />
                 <label className="flex items-center gap-1 mt-1 text-xs">
                   <input
                     type="checkbox"
@@ -157,9 +157,9 @@ const UpdateProduct = () => {
           <Input type="file" multiple accept="image/*" onChange={handleImageChange} />
 
           {previewImages.length > 0 && (
-            <div className="grid grid-cols-3 gap-3 mt-4">
+            <div className="grid grid-cols-3 gap-3 mt-4 ">
               {previewImages.map((src, i) => (
-                <img key={i} src={src} className="h-24 w-full object-cover rounded" />
+                <img key={i} src={src} className="h-full w-full object-cover rounded border-2" />
               ))}
             </div>
           )}
