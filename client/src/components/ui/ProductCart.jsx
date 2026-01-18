@@ -42,7 +42,7 @@ const ProductCard = ({ product ,loading}) => {
    
   return (
     <div className="shadow-lg rounded-lg overflow-hidden h-max">
-      <div className="w-full h-full aspect-square overflow-hidden">
+      <div className="w-full h-50 aspect-square overflow-hidden">
        {
         loading? <Skeleton className="w-full h-full rounded-lg"/> :<img
           src={productImg?.[0]?.url}
