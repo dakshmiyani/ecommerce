@@ -249,6 +249,14 @@ const getAllOrders= async (req,res)=>{
   }
 }
 
+const getOrderbyId = async (req, res)=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
 module.exports ={
   createOrder,
   getOrder,
