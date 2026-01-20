@@ -251,6 +251,9 @@ const getAllOrders= async (req,res)=>{
 
 const getOrderbyId = async (req, res)=>{
   try {
+    const {id: orderId} = req.params;
+
+    const order = await Order.findById(orderId).populate("userId","name email");
     
   } catch (error) {
     
