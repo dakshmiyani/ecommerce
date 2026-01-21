@@ -254,6 +254,21 @@ const getOrderbyId = async (req, res)=>{
     const {id: orderId} = req.params;
 
     const order = await Order.findById(orderId).populate("userId","name email");
+    if(!order){
+      return res.status(404).json({
+        success:false,
+        message:"order not found"
+      })
+    }
+
+    return res.status(200).json({
+      success:true,
+      order,
+      message:"order fetched successfully"
+    })
+
+
+    
     
   } catch (error) {
     
@@ -265,5 +280,6 @@ module.exports ={
   getOrder,
   updateDeliveryStatus,
   cancelOrder,
-  getAllOrders
+  getAllOrders,
+  getOrderbyId
 }
