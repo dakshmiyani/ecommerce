@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
-
+const baseUrl = process.env.FRONTEND_BASE_URL || 'http://localhost:5173';
 const verifyEmail = async (email, token) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -19,7 +19,7 @@ const verifyEmail = async (email, token) => {
 
 You recently registered on our website. Please verify your email by clicking the link below:
 
-http://localhost:5173/verify/${token}
+${baseUrl}/verify/${token}
 
 Thanks,`
     };
