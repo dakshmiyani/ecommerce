@@ -12,7 +12,7 @@ app.use(cors({
 }));
 
 // database connection
-const ConnectDB = require('./database/db')
+const ConnectDB = require('./config/db')
   ConnectDB();
 
 //routes
