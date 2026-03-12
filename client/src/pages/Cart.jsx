@@ -18,54 +18,62 @@ const Cart = () => {
   const dispatch = useDispatch();
 
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+  const baseURL = import.meta.env.VITE_BASE_URL;
 
-const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("accessToken");
 
 
-const handleUpdateQuantity = async (item, type) => {
-  try {
-    const res = await axios.put(
-      `${baseURL}/cart/update`,
-      {
-        productId: item.productId._id,
-        type, // "increase" | "decrease"
-      },
-      {
+  const handleUpdateQuantity = async (item, type) => {
+    try {
+      const res = await axios.put(
+        `${baseURL}/cart/update`,
+        {
+          productId: item.productId?._id || item.productId,
+          type, // "increase" | "decrease"
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+
+        dispatch(setCart(res.data.cart)); // 🔥 backend → redux → UI
+      }
+    } catch (error) {
+      console.error("Quantity update failed:", error);
+    }
+  };
+
+  const handleRemove = async (item) => {
+    try {
+      // If the product was deleted from the DB, populate returns null.
+      // E.g: {productId: null, quantity: 1, price: 2324, _id: '69b...'}
+      // We will pass the item._id to the backend and append a query parameter so the backend knows it's removing by cart item ID.
+      const idType = item.productId === null ? "cartItemId" : "productId";
+      const idToRemove = item.productId?._id || item.productId || item._id;
+
+      if (!idToRemove) {
+        console.error("Could not find product ID to remove", item);
+        return;
+      }
+
+      const res = await axios.delete(`${baseURL}/cart/remove/${idToRemove}?idType=${idType}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+      });
+
+      if (res.data.success) {
+        dispatch(setCart(res.data.cart));
+        console.log("BACKEND CART:", res.data.cart);
       }
-    );
-
-    if (res.data.success) {
-
-      dispatch(setCart(res.data.cart)); // 🔥 backend → redux → UI
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error("Quantity update failed:", error);
-  }
-};
-
-const handleRemove = async (item) => {
-  try {
-    const res = await axios.delete(`${baseURL}/cart/remove`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      data: {
-        productId: item.productId._id,
-      },
-    });
-
-    if (res.data.success) {
-      dispatch(setCart(res.data.cart));
-      console.log("BACKEND CART:", res.data.cart);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
   const subtotal = cart?.totalPrice || 0;
   const shipping = subtotal > 299 ? 0 : subtotal * 0.1;
@@ -124,11 +132,11 @@ const handleRemove = async (item) => {
                     {/* Product Details */}
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm sm:text-lg">
-                        {item.productId?.productName}
+                        {item.productId?.productName || "Product Unavailable"}
                       </h3>
 
                       <p className="text-xs text-gray-600 line-clamp-2">
-                        {item.productId?.description}
+                        {item.productId?.description || "This product is no longer available in the store."}
                       </p>
 
                       <p className="text-xs sm:text-sm text-gray-600 mt-1">
@@ -143,7 +151,7 @@ const handleRemove = async (item) => {
                           size="sm"
                           className="bg-blue-600 text-white w-8 h-8"
                           disabled={item.quantity === 1}
-                          onClick={() => handleUpdateQuantity(item,"decrease")}
+                          onClick={() => handleUpdateQuantity(item, "decrease")}
                         >
                           -
                         </Button>
@@ -155,7 +163,7 @@ const handleRemove = async (item) => {
                         <Button
                           size="sm"
                           className="bg-blue-600 text-white w-8 h-8"
-                          onClick={() => handleUpdateQuantity(item,"increase")}
+                          onClick={() => handleUpdateQuantity(item, "increase")}
                         >
                           +
                         </Button>
@@ -166,12 +174,12 @@ const handleRemove = async (item) => {
                           ₹ {item.price * item.quantity}
                         </p>
 
-                        
+
                       </div>
-                      <p   onClick={() => handleRemove(item)} className="flex items-center gap-1 text-red-400 text-sm hover:text-red-600">
-                          <Trash2 size={16} />
-                          Remove
-                        </p>
+                      <p onClick={() => handleRemove(item)} className="flex items-center gap-1 text-red-400 text-sm hover:text-red-600">
+                        <Trash2 size={16} />
+                        Remove
+                      </p>
                     </div>
                   </div>
                 </Card>
@@ -209,12 +217,12 @@ const handleRemove = async (item) => {
                   </div>
                   <div className=" space-y-3 pt-4">
                     <div className="flex space-x-2">
-                    <Input className="flex justify-start mr-4 w-full" placeholder="Enter a Promo code"></Input>
-                  <Button className="flex justify-end bg-blue-600 text-white" variant="outline" >Apply</Button>
-                  </div>
-                   <Link to="/order"><Button className="w-full bg-blue-600 text-white cursor-pointer" variant="outline">Place Order</Button></Link>
+                      <Input className="flex justify-start mr-4 w-full" placeholder="Enter a Promo code"></Input>
+                      <Button className="flex justify-end bg-blue-600 text-white" variant="outline" >Apply</Button>
+                    </div>
+                    <Link to="/order"><Button className="w-full bg-blue-600 text-white cursor-pointer" variant="outline">Place Order</Button></Link>
                     <Link to="/products"> <Button variant="outline" className="w-full bg-transparent">
-                 Continue Shopping</Button></Link>
+                      Continue Shopping</Button></Link>
                   </div>
                   <div className="text-sm text-muted-foreground pt-4">
                     <p>* Free shipping on orders over ₹299</p>
@@ -226,7 +234,7 @@ const handleRemove = async (item) => {
             </div>
           </div>
         </div>
-            ) : (
+      ) : (
         <div className="flex flex-col items-center justify-center h-[60vh] text-center text-gray-500 px-4">
           {/* Cart Icon */}
           <div className="flex items-center justify-center bg-gray-100 rounded-full w-24 h-24 mb-6">
@@ -263,7 +271,7 @@ const handleRemove = async (item) => {
           </button>
         </div>
       )}
-    </div>   
+    </div>
   );
 }
 

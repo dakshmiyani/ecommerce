@@ -4,29 +4,29 @@ const productModel = require("../models/product.model");
 
 
 
-const getCart = async (req,res)=>{
-    try {
+const getCart = async (req, res) => {
+  try {
 
-        const userId =req.id;
+    const userId = req.id;
 
-        const cart= await Cart.findOne({userId}).populate("items.productId")
-         if(! cart){
-            return res.json({
-                success:true,
-                 cart:[]
-                })
-         }
-          res.status(200).json({
-            success:true,
-            cart
-        })
-    } catch (error) {
-        return res.status(500).json({
-            success:false,
-            message:error.message
-        })
-        
+    const cart = await Cart.findOne({ userId }).populate("items.productId")
+    if (!cart) {
+      return res.json({
+        success: true,
+        cart: []
+      })
     }
+    res.status(200).json({
+      success: true,
+      cart
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+
+  }
 }
 
 const addToCart = async (req, res) => {
@@ -78,10 +78,10 @@ const addToCart = async (req, res) => {
     await cart.save();
 
     // 5️⃣ Populate product details
-  const populatedCart = await Cart.findById(cart._id).populate({
-  path: "items.productId",
-  select: "productName productImg productPrice",
-});
+    const populatedCart = await Cart.findById(cart._id).populate({
+      path: "items.productId",
+      select: "productName productImg productPrice",
+    });
 
     return res.status(200).json({
       success: true,
@@ -111,9 +111,10 @@ const updateQuantity = async (req, res) => {
       });
     }
 
-    const item = cart.items.find(
-      (item) => item.productId.toString() === productId
-    );
+    const item = cart.items.find((item) => {
+      const currentItemId = item.productId?._id ? item.productId._id.toString() : item.productId?.toString();
+      return currentItemId === productId.toString();
+    });
 
     if (!item) {
       return res.status(404).json({
@@ -157,7 +158,16 @@ const updateQuantity = async (req, res) => {
 const removQuantity = async (req, res) => {
   try {
     const userId = req.id;
-    const { productId } = req.body;
+    // Safely get product ID from params instead of body
+    const idToRemove = req.params.productId;
+    const idType = req.query.idType === "cartItemId" ? "cartItemId" : "productId";
+
+    if (!idToRemove) {
+      return res.status(400).json({
+        success: false,
+        message: "Item ID is required",
+      });
+    }
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -167,9 +177,18 @@ const removQuantity = async (req, res) => {
       });
     }
 
-    cart.items = cart.items.filter(
-      (item) => item.productId.toString() !== productId
-    );
+    cart.items = cart.items.filter((item) => {
+      if (idType === "cartItemId") {
+        return item._id.toString() !== idToRemove.toString();
+      } else {
+        // Safely extract the ID whether it's an ObjectId or a populated object
+        const currentItemId = item.productId?._id ? item.productId._id.toString() : item.productId?.toString();
+        // If currentItemId is literally undefined/null because the DB product was deleted, 
+        // string comparison will fail, so we ensure it's comparable or skip it.
+        if (!currentItemId) return true; // Keep the item in the array if we can't extract a product ID (they will have to delete using cartItemId)
+        return currentItemId !== idToRemove.toString();
+      }
+    });
 
     cart.totalPrice = cart.items.reduce(
       (acc, item) => acc + item.price * item.quantity,
@@ -177,6 +196,7 @@ const removQuantity = async (req, res) => {
     );
 
     await cart.save();
+    console.log(`Removed item (${idType}): ${idToRemove}. new items length: ${cart.items.length}`);
 
     // ✅ populate before sending
     const populatedCart = await Cart.findById(cart._id)
@@ -187,6 +207,7 @@ const removQuantity = async (req, res) => {
       cart: populatedCart,
     });
   } catch (error) {
+    console.log("Error in removQuantity:", error)
     res.status(500).json({
       success: false,
       message: error.message,
@@ -198,9 +219,9 @@ const removQuantity = async (req, res) => {
 
 
 
-module.exports= {
-    getCart,
-    addToCart,
-    updateQuantity,
-    removQuantity 
+module.exports = {
+  getCart,
+  addToCart,
+  updateQuantity,
+  removQuantity
 }
