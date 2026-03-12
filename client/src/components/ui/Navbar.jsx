@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "@/redux/userSlice";
-
+import { setCart } from "@/redux/productSlice";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -53,30 +53,30 @@ const Navbar = () => {
       }
     }
   };
-  const handleCart = async (e) =>{
-    try { 
-      
+  const handleCart = async (e) => {
+    try {
+
       const Cartres = await axios.get(
-      `${baseUrl}/cart/getcart`,
-      
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          
-        },
-      }
-    )
-        dispatch(setCart(Cartres.data.cart));
-      
+        `${baseURL}/cart/getcart`,
+
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+
+          },
+        }
+      )
+      dispatch(setCart(Cartres.data.cart));
+
     } catch (error) {
-      
+
     }
 
   }
   return (
-   
 
-        
+
+
     <>
       {/* NAVBAR */}
       <header className="bg-blue-50 fixed w-full z-20 border-b border-blue-200">
@@ -115,9 +115,9 @@ const Navbar = () => {
             {/* Cart */}
             <Link to="/cart" className="relative">
               <ShoppingCart onClick={handleCart} className="w-6 h-6 text-gray-700" />
-              {cartCount >0 && (
+              {cartCount > 0 && (
                 <span className="bg-blue-500 absolute -top-2 -right-3 text-white text-xs rounded-full px-1.5">
-                  {cartCount }
+                  {cartCount}
                 </span>
               )}
             </Link>
@@ -157,9 +157,8 @@ const Navbar = () => {
 
       {/* OVERLAY */}
       <div
-        className={`fixed inset-0 z-30 bg-black/40 transition-opacity ${
-          menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 z-30 bg-black/40 transition-opacity ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={() => setMenuOpen(false)}
       />
 
